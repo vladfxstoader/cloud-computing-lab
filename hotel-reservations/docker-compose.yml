@@ -15,3 +15,18 @@ services:
     build: ./room-service
     ports:
       - "5002:5002"
+
+  reservation-service:
+    build: ./reservation-service
+    ports:
+      - "5003:5003"
+
+  payment-service:
+    build: ./payment-service
+    ports:
+      - "5004:5004"
+
+  notification-service:
+    build: ./notification-service
+    ports:
+      - "5005:5005"
