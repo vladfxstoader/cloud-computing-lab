@@ -5,3 +5,13 @@ services:
     build: ./user-service
     ports:
       - "5000:5000"
+  
+  hotel-service:
+    build: ./hotel-service
+    ports:
+      - "5001:5001"
+
+  room-service:
+    build: ./room-service
+    ports:
+      - "5002:5002"
