@@ -69,7 +69,6 @@ def update_user(user_id):
     if 'email' in data:
         user.email = data['email']
     if 'password' in data:
-        # Criptarea noii parole
         hashed_password = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt())
         user.password = hashed_password.decode('utf-8')
     db.session.commit()
