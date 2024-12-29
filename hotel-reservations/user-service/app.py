@@ -1,4 +1,5 @@
 import os
+import bcrypt
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
@@ -27,8 +28,10 @@ def create_user():
     data = request.get_json()
     if not data or 'name' not in data or 'email' not in data or 'password' not in data:
         return jsonify({"error": "Invalid input"}), 400
-    
-    new_user = User(name=data['name'], email=data['email'], password=data['password'])
+
+    hashed_password = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt())
+
+    new_user = User(name=data['name'], email=data['email'], password=hashed_password.decode('utf-8'))
     db.session.add(new_user)
     db.session.commit()
     return jsonify({"message": "User created successfully"}), 201
@@ -66,9 +69,19 @@ def update_user(user_id):
     if 'email' in data:
         user.email = data['email']
     if 'password' in data:
-        user.password = data['password']
+        # Criptarea noii parole
+        hashed_password = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt())
+        user.password = hashed_password.decode('utf-8')
     db.session.commit()
     return jsonify({"message": "User updated successfully"}), 200
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    user = User.query.filter_by(email=data['email']).first()
+    if user and bcrypt.checkpw(data['password'].encode('utf-8'), user.password.encode('utf-8')):
+        return jsonify({"message": "Login successful"}), 200
+    return jsonify({"error": "Invalid email or password"}), 401
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
