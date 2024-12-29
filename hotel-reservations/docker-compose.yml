@@ -5,7 +5,23 @@ services:
     build: ./user-service
     ports:
       - "5000:5000"
+    environment:
+      DATABASE_URL: postgresql://user:password@user-db:5432/user_db
+    depends_on:
+      - user-db
   
+  user-db:
+    image: postgres:15
+    container_name: user-db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: user_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - user-data:/var/lib/postgresql/data
+
   hotel-service:
     build: ./hotel-service
     ports:
@@ -30,3 +46,6 @@ services:
     build: ./notification-service
     ports:
       - "5005:5005"
+
+volumes:
+  user-data:
