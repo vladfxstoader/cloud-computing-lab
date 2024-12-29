@@ -1,15 +1,6 @@
 version: '3.8'
 
 services:
-  user-service:
-    build: ./user-service
-    ports:
-      - "5000:5000"
-    environment:
-      DATABASE_URL: postgresql://user:password@user-db:5432/user_db
-    depends_on:
-      - user-db
-  
   user-db:
     image: postgres:15
     container_name: user-db
@@ -22,10 +13,39 @@ services:
     volumes:
       - user-data:/var/lib/postgresql/data
 
+  user-service:
+    build: ./user-service
+    ports:
+      - "5000:5000"
+    environment:
+      DATABASE_URL: postgresql://user:password@user-db:5432/user_db
+    depends_on:
+      - user-db
+    volumes:
+      - ./user-service:/app
+
+  hotel-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: hotel_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - hotel-db-data:/var/lib/postgresql/data
+
   hotel-service:
-    build: ./hotel-service
+    build:
+      context: ./hotel-service
     ports:
       - "5001:5001"
+    depends_on:
+      - hotel-db
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@hotel-db:5432/hotel_db
+    volumes:
+      - ./hotel-service:/app
 
   room-service:
     build: ./room-service
@@ -49,3 +69,4 @@ services:
 
 volumes:
   user-data:
+  hotel-db-data:
