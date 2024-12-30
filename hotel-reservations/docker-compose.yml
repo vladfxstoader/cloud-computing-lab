@@ -97,10 +97,28 @@ services:
       - user-service
       - room-service
 
+  payment-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: payment_db
+    volumes:
+      - payment-db-data:/var/lib/postgresql/data
+    ports:
+      - "5436:5432"
+
   payment-service:
-    build: ./payment-service
+    build: 
+      context: ./payment-service
     ports:
       - "5004:5004"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@payment-db:5432/payment_db
+    depends_on:
+      - payment-db
+    volumes:
+      - ./payment-service:/app
 
   notification-service:
     build: ./notification-service
@@ -112,3 +130,4 @@ volumes:
   hotel-db-data:
   room-db-data:
   reservation-db-data:
+  payment-db-data:
