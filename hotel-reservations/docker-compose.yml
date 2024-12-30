@@ -65,8 +65,10 @@ services:
       - "5002:5002"
     depends_on:
       - room-db
+      - hotel-service
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@room-db:5432/room_db
+      - HOTEL_SERVICE_URL=http://hotel-service:5001
     volumes:
       - ./room-service:/app
 

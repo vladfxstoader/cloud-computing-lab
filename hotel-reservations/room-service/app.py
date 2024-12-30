@@ -1,4 +1,5 @@
 import os
+import requests
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
@@ -23,11 +24,19 @@ with app.app_context():
 def index():
     return "Room service is running!"
 
+def hotel_exists(hotel_id):
+    hotel_service_url = os.getenv('HOTEL_SERVICE_URL', 'http://hotel-service:5001/hotels')
+    response = requests.get(f"{hotel_service_url}/{hotel_id}")
+    return response.status_code == 200
+
 @app.route('/rooms', methods=['POST'])
 def add_room():
     data = request.get_json()
     if not data or 'hotel_id' not in data or 'type' not in data or 'price' not in data:
         return jsonify({"error": "Invalid input"}), 400
+
+    if not hotel_exists(data['hotel_id']):
+        return jsonify({"error": "Hotel with given id not found!"}), 404
 
     new_room = Room(
         hotel_id=data['hotel_id'],
