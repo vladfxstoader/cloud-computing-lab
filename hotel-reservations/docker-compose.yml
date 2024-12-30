@@ -47,10 +47,28 @@ services:
     volumes:
       - ./hotel-service:/app
 
+  room-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: room_db
+    volumes:
+      - room-db-data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+
   room-service:
-    build: ./room-service
+    build:
+      context: ./room-service
     ports:
       - "5002:5002"
+    depends_on:
+      - room-db
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@room-db:5432/room_db
+    volumes:
+      - ./room-service:/app
 
   reservation-service:
     build: ./reservation-service
@@ -70,3 +88,4 @@ services:
 volumes:
   user-data:
   hotel-db-data:
+  room-db-data:
