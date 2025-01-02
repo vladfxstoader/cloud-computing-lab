@@ -26,12 +26,14 @@ def index():
 
 def hotel_exists(hotel_id):
     hotel_service_url = os.getenv('HOTEL_SERVICE_URL', 'http://hotel-service:5001/hotels')
+    print(f"{hotel_service_url}/{hotel_id}")
     response = requests.get(f"{hotel_service_url}/{hotel_id}")
     return response.status_code == 200
 
 @app.route('/rooms', methods=['POST'])
 def add_room():
     data = request.get_json()
+    print(data['hotel_id'])
     if not data or 'hotel_id' not in data or 'type' not in data or 'price' not in data:
         return jsonify({"error": "Invalid input"}), 400
 
@@ -99,6 +101,23 @@ def delete_room(room_id):
     db.session.delete(room)
     db.session.commit()
     return jsonify({"message": "Room deleted successfully"}), 200
+
+@app.route('/rooms/hotel/<int:hotel_id>', methods=['GET'])
+def get_rooms_by_hotel(hotel_id):
+    rooms = Room.query.filter_by(hotel_id=hotel_id).all()
+    if not rooms:
+        return jsonify({"error": "No rooms found for the given hotel"}), 404
+    room_list = [
+        {
+            "id": room.id,
+            "type": room.type,
+            "price": room.price,
+            "availability": room.availability
+        }
+        for room in rooms
+    ]
+    return jsonify(room_list), 200
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002)

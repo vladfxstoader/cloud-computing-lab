@@ -4,7 +4,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-# Configurația bazei de date
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://postgres:postgres@payment-db:5432/payment_db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 

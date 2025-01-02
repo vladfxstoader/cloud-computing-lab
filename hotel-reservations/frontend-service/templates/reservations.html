@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservations</title>
+</head>
+<body>
+    <h1>Reservations</h1>
+    <ul>
+        {% for reservation in reservations %}
+            <li>
+                Reservation for {{ reservation.user_id }} at Hotel {{ reservation.hotel_id }}
+                <br> Check-in: {{ reservation.check_in }} - Check-out: {{ reservation.check_out }}
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="/">Back to Home</a>
+</body>
+</html>

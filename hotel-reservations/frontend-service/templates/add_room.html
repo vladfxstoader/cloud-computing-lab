@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Room</title>
+</head>
+<body>
+    <h1>Add a New Room</h1>
+    <form action="/rooms/add" method="post">
+	<input type="hidden" name="hotel_id" value="{{ hotel_id }}"> 
+
+        <label for="type">Room Type:</label><br>
+        <input type="text" id="type" name="type" required><br><br>
+
+        <label for="price">Price:</label><br>
+        <input type="text" id="price" name="price" required><br><br>
+
+        <button type="submit">Add Room</button>
+    </form>
+    <a href="/hotels">Back to Hotels</a>
+</body>
+</html>

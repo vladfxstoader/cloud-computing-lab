@@ -68,7 +68,7 @@ services:
       - hotel-service
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@room-db:5432/room_db
-      - HOTEL_SERVICE_URL=http://hotel-service:5001
+      - HOTEL_SERVICE_URL=http://hotel-service:5001/hotels
     volumes:
       - ./room-service:/app
 
@@ -124,6 +124,20 @@ services:
     build: ./notification-service
     ports:
       - "5005:5005"
+
+  hotel-frontend:
+    build:
+      context: ./frontend-service
+    ports:
+      - "8080:8080"
+    environment:
+      - HOTEL_BACKEND_URL=http://hotel-service:5001
+      - ROOM_BACKEND_URL=http://room-service:5002
+      - RESERVATION_BACKEND_URL=http://reservation-service:5003
+    depends_on:
+      - hotel-service
+      - room-service
+      - reservation-service
 
 volumes:
   user-data:

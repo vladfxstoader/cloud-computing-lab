@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotels</title>
+</head>
+<body>
+    <h1>Hotels</h1>
+    <a href="/hotels/add"><button>Add Hotel</button></a>
+    <ul>
+        {% for hotel in hotels %}
+            <li>
+                <strong>{{ hotel.name }}</strong> - {{ hotel.location }}
+                <br> Facilities: {{ hotel.facilities | join(", ") }}
+                <ul>
+			<a href="/rooms/add?hotel_id={{ hotel.id }}">
+    				<button>Add Room</button>
+			</a>
+                    {% if hotel.rooms %}
+                        <h3>Rooms:</h3>
+                        {% for room in hotel.rooms %}
+                            <li>
+                                Type: {{ room.type }}, Price: ${{ room.price }}, 
+                                Availability: {{ "Yes" if room.availability else "No" }}
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li>No rooms available for this hotel.</li>
+                    {% endif %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="/">Back to Home</a>
+</body>
+</html>

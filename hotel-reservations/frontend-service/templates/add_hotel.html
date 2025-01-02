@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Hotel</title>
+</head>
+<body>
+    <h1>Add a New Hotel</h1>
+    <form action="/hotels/add" method="post">
+        <label for="name">Hotel Name:</label><br>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="location">Location:</label><br>
+        <input type="text" id="location" name="location" required><br><br>
+
+        <label for="facilities">Facilities (comma-separated):</label><br>
+        <input type="text" id="facilities" name="facilities"><br><br>
+
+        <button type="submit">Add Hotel</button>
+    </form>
+    <a href="/hotels">Back to Hotels</a>
+</body>
+</html>
