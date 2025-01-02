@@ -49,6 +49,13 @@ def get_user(user_id):
         return jsonify({"error": "User not found"}), 404
     return jsonify({"id": user.id, "name": user.name, "email": user.email}), 200
 
+@app.route('/users/email/<string:email>', methods=['GET'])
+def get_user_by_email(email):
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    return jsonify({"id": user.id, "name": user.name, "email": user.email}), 200
+
 @app.route('/users/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
     user = User.query.get(user_id)

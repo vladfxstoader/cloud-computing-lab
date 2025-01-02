@@ -7,13 +7,15 @@
 </head>
 <body>
 <a href="/logout"><button>Logout</button></a>
-    <h1>Reservations</h1>
+    <h1>My Reservations</h1>
     <ul>
         {% for reservation in reservations %}
             <li>
-                Reservation for {{ reservation.user_id }} at Hotel {{ reservation.hotel_id }}
+                Reservation for Room ID {{ reservation.room_id }}
                 <br> Check-in: {{ reservation.check_in }} - Check-out: {{ reservation.check_out }}
             </li>
+        {% else %}
+            <li>No reservations found.</li>
         {% endfor %}
     </ul>
     <a href="/">Back to Home</a>

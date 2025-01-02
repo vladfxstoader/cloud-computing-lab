@@ -5,7 +5,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-# Configurația bazei de date
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://postgres:postgres@reservation-db:5432/reservation_db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -105,6 +104,23 @@ def delete_reservation(reservation_id):
     db.session.delete(reservation)
     db.session.commit()
     return jsonify({"message": "Reservation deleted successfully"}), 200
+
+@app.route('/reservations/user/<int:user_id>', methods=['GET'])
+def get_user_reservations(user_id):
+
+    reservations = Reservation.query.filter_by(user_id=user_id).all()
+    if not reservations:
+        return jsonify({"message": "No reservations found for this user."}), 404
+    reservation_list = [
+        {
+            "id": reservation.id,
+            "room_id": reservation.room_id,
+            "check_in": reservation.check_in,
+            "check_out": reservation.check_out
+        }
+        for reservation in reservations
+    ]
+    return jsonify(reservation_list), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5003)

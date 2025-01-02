@@ -122,17 +122,80 @@ def rooms():
 
     return render_template('rooms.html', rooms=rooms)
 
+
+@app.route('/rooms/reserve', methods=['POST'])
+@require_token
+def reserve_room():
+    token = request.cookies.get('token')
+    if not token:
+        return redirect(url_for('login'))
+    decoded = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
+    email = decoded.get('email')
+
+    try:
+        user_response = requests.get(f'{USER_BACKEND_URL}/users/email/{email}')
+        if user_response.status_code != 200:
+            return jsonify({"error": "User not found"}), 404
+        user_id = user_response.json().get('id')
+    except Exception as e:
+        return jsonify({"error": f"Error fetching user data: {str(e)}"}), 500
+
+    data = request.form
+    room_id = data.get('room_id')
+    check_in = data.get('check_in')
+    check_out = data.get('check_out')
+
+    try:
+        reservation_response = requests.post(
+            f'{RESERVATION_BACKEND_URL}/reservations',
+            json={
+                'user_id': user_id,
+                'room_id': room_id,
+                'check_in': check_in,
+                'check_out': check_out
+            }
+        )
+        if reservation_response.status_code != 201:
+            return jsonify({"error": "Failed to create reservation"}), reservation_response.status_code
+
+        room_response = requests.put(
+            f'{ROOM_BACKEND_URL}/rooms/{room_id}',
+            json={'availability': False}
+        )
+        if room_response.status_code != 200:
+            return jsonify({"error": "Failed to update room availability"}), room_response.status_code
+
+        return redirect('/hotels')
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 @app.route('/reservations')
 @require_token
 def reservations():
-    try:
-        response = requests.get(f'{RESERVATION_BACKEND_URL}/reservations')
-        reservations = response.json()
-    except Exception as e:
-        reservations = []
-        print(f"Error fetching reservations: {e}")
+    token = request.cookies.get('token')
+    if not token:
+        return redirect(url_for('login'))
+    decoded = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
+    email = decoded.get('email')
 
-    return render_template('reservations.html', reservations=reservations)
+    try:
+        user_response = requests.get(f'{USER_BACKEND_URL}/users/email/{email}')
+        if user_response.status_code != 200:
+            return jsonify({"error": "User not found"}), 404
+        user_id = user_response.json().get('id')
+    except Exception as e:
+        return jsonify({"error": f"Error fetching user data: {str(e)}"}), 500
+
+    try:
+        reservations_response = requests.get(f'{RESERVATION_BACKEND_URL}/reservations/user/{user_id}')
+        if reservations_response.status_code != 200:
+            return jsonify({"error": "Failed to fetch reservations"}), reservations_response.status_code
+
+        reservations = reservations_response.json()
+        return render_template('reservations.html', reservations=reservations)
+    except Exception as e:
+        return jsonify({"error": f"Error fetching reservations: {str(e)}"}), 500
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
