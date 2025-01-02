@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for, f
 import requests
 import os
 import jwt
+import re
 from functools import wraps
 
 app = Flask(__name__)
@@ -11,6 +12,17 @@ HOTEL_BACKEND_URL = os.getenv('HOTEL_BACKEND_URL', 'http://hotel-service:5001')
 ROOM_BACKEND_URL = os.getenv('ROOM_BACKEND_URL', 'http://room-service:5002')
 RESERVATION_BACKEND_URL = os.getenv('RESERVATION_BACKEND_URL', 'http://reservation-service:5003')
 USER_BACKEND_URL = os.getenv('USER_BACKEND_URL', 'http://user-service:5000')
+
+def validate_password(password):
+    if len(password) < 8:
+        return "Password must be at least 8 characters long."
+    if not re.search(r'[a-z]', password):
+        return "Password must contain at least one lowercase letter."
+    if not re.search(r'[A-Z]', password):
+        return "Password must contain at least one uppercase letter."
+    if not re.search(r'\d', password):
+        return "Password must contain at least one digit."
+    return None
 
 def require_token(f):
     @wraps(f)
@@ -231,6 +243,18 @@ def register():
         email = request.form.get('email')
         password = request.form.get('password')
 
+        try:
+            response = requests.get(f'{USER_BACKEND_URL}/users/email/{email}')
+            if response.status_code == 200:
+                return render_template('register.html', error="Error: Email already exists.")
+        except Exception as e:
+            if response.status_code != 404:
+                return render_template('register.html', error=f"Error: {str(e)}")
+
+        password_error = validate_password(password)
+        if password_error:
+            return render_template('register.html', error=password_error)
+        
         try:
             response = requests.post(
                 f'{USER_BACKEND_URL}/users',
