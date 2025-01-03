@@ -45,6 +45,15 @@ def add_reservation():
     if not room_exists(data['room_id']):
         return jsonify({"error": "Room ID not found"}), 404
 
+    overlapping_reservations = Reservation.query.filter(
+        Reservation.room_id == data['room_id'],
+        Reservation.check_out > data['check_in'],
+        Reservation.check_in < data['check_out']
+    ).all()
+
+    if overlapping_reservations:
+        return jsonify({"error": "Room is already reserved for the selected dates"}), 409
+
     new_reservation = Reservation(
         user_id=data['user_id'],
         room_id=data['room_id'],
