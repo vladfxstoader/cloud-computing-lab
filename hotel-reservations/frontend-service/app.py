@@ -205,7 +205,18 @@ def reservations():
             return jsonify({"error": "Failed to fetch reservations"}), reservations_response.status_code
 
         reservations = reservations_response.json()
-        return render_template('reservations.html', reservations=reservations)
+
+        detailed_reservations = []
+        for reservation in reservations:
+            reservation_id = reservation['id']
+            try:
+                details_response = requests.get(f'{RESERVATION_BACKEND_URL}/reservations/details/{reservation_id}')
+                if details_response.status_code == 200:
+                    detailed_reservations.append(details_response.json())
+            except Exception as e:
+                print(f"Error fetching details for reservation {reservation_id}: {e}")
+
+        return render_template('reservations.html', reservations=detailed_reservations)
     except Exception as e:
         return jsonify({"error": f"Error fetching reservations: {str(e)}"}), 500
 

@@ -6,13 +6,16 @@
     <title>Reservations</title>
 </head>
 <body>
-<a href="/logout"><button>Logout</button></a>
+    <a href="/logout"><button>Logout</button></a>
     <h1>My Reservations</h1>
     <ul>
         {% for reservation in reservations %}
             <li>
-                Reservation for Room ID {{ reservation.room_id }}
-                <br> Check-in: {{ reservation.check_in }} - Check-out: {{ reservation.check_out }}
+                <strong>Hotel:</strong> {{ reservation.hotel_name }}<br>
+                <strong>Location:</strong> {{ reservation.location }}<br>
+                <strong>Room Type:</strong> {{ reservation.room_type }}<br>
+                <strong>Check-in:</strong> {{ reservation.check_in }}<br>
+                <strong>Check-out:</strong> {{ reservation.check_out }}
             </li>
         {% else %}
             <li>No reservations found.</li>

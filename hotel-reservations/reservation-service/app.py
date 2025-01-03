@@ -131,5 +131,32 @@ def get_user_reservations(user_id):
     ]
     return jsonify(reservation_list), 200
 
+@app.route('/reservations/details/<int:reservation_id>', methods=['GET'])
+def get_reservation_details(reservation_id):
+    reservation = Reservation.query.get(reservation_id)
+    if not reservation:
+        return jsonify({"error": "Reservation not found"}), 404
+
+    room_service_url = os.getenv('ROOM_SERVICE_URL', 'http://room-service:5002/rooms')
+    room_response = requests.get(f"{room_service_url}/{reservation.room_id}")
+    if room_response.status_code != 200:
+        return jsonify({"error": "Room details not found"}), 404
+    room = room_response.json()
+
+    hotel_service_url = os.getenv('HOTEL_SERVICE_URL', 'http://hotel-service:5001/hotels')
+    hotel_response = requests.get(f"{hotel_service_url}/{room['hotel_id']}")
+    if hotel_response.status_code != 200:
+        return jsonify({"error": "Hotel details not found"}), 404
+    hotel = hotel_response.json()
+
+    return jsonify({
+        "hotel_name": hotel["name"],
+        "location": hotel["location"],
+        "room_type": room["type"],
+        "check_in": reservation.check_in,
+        "check_out": reservation.check_out
+    }), 200
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5003)
