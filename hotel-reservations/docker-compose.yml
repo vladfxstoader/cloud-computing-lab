@@ -3,7 +3,6 @@ version: '3.8'
 services:
   user-db:
     image: postgres:15
-    container_name: user-db
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
@@ -14,7 +13,7 @@ services:
       - user-data:/var/lib/postgresql/data
 
   user-service:
-    build: ./user-service
+    image: user-service:latest
     ports:
       - "5000:5000"
     environment:
@@ -36,8 +35,7 @@ services:
       - hotel-db-data:/var/lib/postgresql/data
 
   hotel-service:
-    build:
-      context: ./hotel-service
+    image: hotel-service:latest
     ports:
       - "5001:5001"
     depends_on:
@@ -59,8 +57,7 @@ services:
       - "5434:5432"
 
   room-service:
-    build:
-      context: ./room-service
+    image: room-service:latest
     ports:
       - "5002:5002"
     depends_on:
@@ -84,8 +81,7 @@ services:
       - "5435:5432"
 
   reservation-service:
-    build:
-      context: ./reservation-service
+    image: reservation-service:latest
     ports:
       - "5003:5003"
     environment:
@@ -109,8 +105,7 @@ services:
       - "5436:5432"
 
   payment-service:
-    build: 
-      context: ./payment-service
+    image: payment-service:latest
     ports:
       - "5004:5004"
     environment:
@@ -121,13 +116,12 @@ services:
       - ./payment-service:/app
 
   notification-service:
-    build: ./notification-service
+    image: notification-service:latest
     ports:
       - "5005:5005"
 
   hotel-frontend:
-    build:
-      context: ./frontend-service
+    image: hotel-frontend:latest
     ports:
       - "8080:8080"
     environment:
