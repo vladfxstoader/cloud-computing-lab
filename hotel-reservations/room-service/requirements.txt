@@ -3,3 +3,5 @@ Flask-SQLAlchemy
 psycopg2-binary
 requests
 prometheus-client
+jaeger-client
+flask-opentracing
