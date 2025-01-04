@@ -1,9 +1,21 @@
 import os
 import requests
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+from prometheus_client import Counter, generate_latest
 
 app = Flask(__name__)
+
+http_requests_total = Counter('http_requests_total', 'Total HTTP requests', ['method', 'endpoint'])
+
+@app.before_request
+def before_request():
+    http_requests_total.labels(request.method, request.endpoint).inc()
+
+@app.route('/metrics', methods=['GET'])
+def metrics():
+    return Response(generate_latest(), mimetype='text/plain')
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://postgres:postgres@reservation-db:5432/reservation_db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -62,7 +74,38 @@ def add_reservation():
     )
     db.session.add(new_reservation)
     db.session.commit()
-    return jsonify({"message": "Reservation created successfully"}), 201
+
+    room_service_url = os.getenv('ROOM_SERVICE_URL', 'http://room-service:5002/rooms')
+    room_response = requests.get(f"{room_service_url}/{data['room_id']}")
+    if room_response.status_code != 200:
+        return jsonify({"error": "Room details not found"}), 404
+    room = room_response.json()
+    price = room['price']
+
+    date_format = "%d-%m-%Y"
+    date1 = datetime.strptime(data['check_in'], date_format)
+    date2 = datetime.strptime(data['check_out'], date_format)
+    difference = (date2 - date1).days
+
+    amount_to_pay = price * difference
+
+    payment_data = {
+        "reservation_id": new_reservation.id,
+        "amount": amount_to_pay
+    }
+
+    payment_service_url = os.getenv('PAYMENT_SERVICE_URL', 'http://payment-service:5004/payments')
+
+    try:
+        response = requests.post(payment_service_url,
+            json=payment_data
+        )
+        if response.status_code == 201:
+            return jsonify({"message": "Reservation created successfully"}), 201
+        else:
+            return jsonify(response.json()), response.status_code
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/reservations', methods=['GET'])
 def get_reservations():

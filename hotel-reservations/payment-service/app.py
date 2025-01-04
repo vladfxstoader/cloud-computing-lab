@@ -1,8 +1,19 @@
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from flask_sqlalchemy import SQLAlchemy
+from prometheus_client import Counter, generate_latest
 
 app = Flask(__name__)
+
+http_requests_total = Counter('http_requests_total', 'Total HTTP requests', ['method', 'endpoint'])
+
+@app.before_request
+def before_request():
+    http_requests_total.labels(request.method, request.endpoint).inc()
+
+@app.route('/metrics', methods=['GET'])
+def metrics():
+    return Response(generate_latest(), mimetype='text/plain')
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://postgres:postgres@payment-db:5432/payment_db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -66,6 +77,19 @@ def get_payment(payment_id):
         "amount": payment.amount,
         "status": payment.status
     }), 200
+
+@app.route('/payments/reservation/<int:reservation_id>', methods=['GET'])
+def get_payment_by_reservation(reservation_id):
+    payment = Payment.query.filter_by(reservation_id=reservation_id).first()
+    if not payment:
+        return jsonify({"error": "Payment not found"}), 404
+    return jsonify({
+        "id": payment.id,
+        "reservation_id": payment.reservation_id,
+        "amount": payment.amount,
+        "status": payment.status
+    }), 200
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5004)

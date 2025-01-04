@@ -1,9 +1,20 @@
 import os
 import bcrypt
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from flask_sqlalchemy import SQLAlchemy
+from prometheus_client import Counter, generate_latest
 
 app = Flask(__name__)
+
+http_requests_total = Counter('http_requests_total', 'Total HTTP requests', ['method', 'endpoint'])
+
+@app.before_request
+def before_request():
+    http_requests_total.labels(request.method, request.endpoint).inc()
+
+@app.route('/metrics', methods=['GET'])
+def metrics():
+    return Response(generate_latest(), mimetype='text/plain')
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

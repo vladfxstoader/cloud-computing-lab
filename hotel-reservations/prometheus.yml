@@ -1,0 +1,22 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'hotel-service'
+    static_configs:
+      - targets: ['hotel-service:5001']
+  - job_name: 'user-service'
+    static_configs:
+      - targets: ['user-service:5000']
+  - job_name: 'payment-service'
+    static_configs:
+      - targets: ['payment-service:5004']
+  - job_name: 'reservation-service'
+    static_configs:
+      - targets: ['reservation-service:5003']
+  - job_name: 'room-service'
+    static_configs:
+      - targets: ['room-service:5002']
+  - job_name: 'frontend-service'
+    static_configs:
+      - targets: ['hotel-frontend:8080']

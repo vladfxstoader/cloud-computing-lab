@@ -15,7 +15,9 @@
                 <strong>Location:</strong> {{ reservation.location }}<br>
                 <strong>Room Type:</strong> {{ reservation.room_type }}<br>
                 <strong>Check-in:</strong> {{ reservation.check_in }}<br>
-                <strong>Check-out:</strong> {{ reservation.check_out }}
+                <strong>Check-out:</strong> {{ reservation.check_out }}<br>
+                <strong>Amount Paid:</strong> {{ reservation.payment }} $<br>
+                <strong>Payment Status:</strong> {{ reservation.status }}
             </li>
         {% else %}
             <li>No reservations found.</li>

@@ -1,17 +1,29 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
+from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, Response
 import requests
 import os
 import jwt
 import re
 from functools import wraps
+from prometheus_client import Counter, generate_latest
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'MySecretKey1@'
+
+http_requests_total = Counter('http_requests_total', 'Total HTTP requests', ['method', 'endpoint'])
+
+@app.before_request
+def before_request():
+    http_requests_total.labels(request.method, request.endpoint).inc()
+
+@app.route('/metrics', methods=['GET'])
+def metrics():
+    return Response(generate_latest(), mimetype='text/plain')
 
 HOTEL_BACKEND_URL = os.getenv('HOTEL_BACKEND_URL', 'http://hotel-service:5001')
 ROOM_BACKEND_URL = os.getenv('ROOM_BACKEND_URL', 'http://room-service:5002')
 RESERVATION_BACKEND_URL = os.getenv('RESERVATION_BACKEND_URL', 'http://reservation-service:5003')
 USER_BACKEND_URL = os.getenv('USER_BACKEND_URL', 'http://user-service:5000')
+PAYMENT_BACKEND_URL = os.getenv('PAYMENT_BACKEND_URL', 'http://payment-service:5004')
 
 def validate_password(password):
     if len(password) < 8:
@@ -212,7 +224,22 @@ def reservations():
             try:
                 details_response = requests.get(f'{RESERVATION_BACKEND_URL}/reservations/details/{reservation_id}')
                 if details_response.status_code == 200:
-                    detailed_reservations.append(details_response.json())
+                    details = details_response.json()
+
+                    try:
+                        payment_response = requests.get(f'{PAYMENT_BACKEND_URL}/payments/reservation/{reservation_id}')
+                        if payment_response.status_code == 200:
+                            payment_data = payment_response.json()
+                            details['payment'] = payment_data['amount']
+                            details['status'] = payment_data['status']
+                        else:
+                            details['payment'] = "N/A"
+                            details['status'] = "Not Paid"
+                    except Exception as e:
+                        details['payment'] = "Error"
+                        details['status'] = "Error fetching payment"
+
+                    detailed_reservations.append(details)
             except Exception as e:
                 print(f"Error fetching details for reservation {reservation_id}: {e}")
 
