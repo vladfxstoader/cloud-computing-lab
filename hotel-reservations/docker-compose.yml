@@ -12,6 +12,8 @@ services:
       - "5432:5432"
     volumes:
       - user-data:/var/lib/postgresql/data
+    networks:
+      - hotel-network
 
   user-service:
     build: ./user-service
@@ -23,6 +25,8 @@ services:
       - user-db
     volumes:
       - ./user-service:/app
+    networks:
+      - hotel-network
 
   hotel-db:
     image: postgres:15
@@ -34,6 +38,8 @@ services:
       - "5433:5432"
     volumes:
       - hotel-db-data:/var/lib/postgresql/data
+    networks:
+      - hotel-network
 
   hotel-service:
     build:
@@ -46,6 +52,8 @@ services:
       - DATABASE_URL=postgresql://postgres:postgres@hotel-db:5432/hotel_db
     volumes:
       - ./hotel-service:/app
+    networks:
+      - hotel-network
 
   room-db:
     image: postgres:15
@@ -57,6 +65,8 @@ services:
       - room-db-data:/var/lib/postgresql/data
     ports:
       - "5434:5432"
+    networks:
+      - hotel-network
 
   room-service:
     build:
@@ -71,6 +81,8 @@ services:
       - HOTEL_SERVICE_URL=http://hotel-service:5001/hotels
     volumes:
       - ./room-service:/app
+    networks:
+      - hotel-network
 
   reservation-db:
     image: postgres:15
@@ -82,6 +94,8 @@ services:
       - reservation-db-data:/var/lib/postgresql/data
     ports:
       - "5435:5432"
+    networks:
+      - hotel-network
 
   reservation-service:
     build:
@@ -98,6 +112,8 @@ services:
       - user-service
       - room-service
       - payment-service
+    networks:
+      - hotel-network
 
   payment-db:
     image: postgres:15
@@ -109,6 +125,8 @@ services:
       - payment-db-data:/var/lib/postgresql/data
     ports:
       - "5436:5432"
+    networks:
+      - hotel-network
 
   payment-service:
     build:
@@ -121,11 +139,15 @@ services:
       - payment-db
     volumes:
       - ./payment-service:/app
+    networks:
+      - hotel-network
 
   notification-service:
     build: ./notification-service
     ports:
       - "5005:5005"
+    networks:
+      - hotel-network
 
   hotel-frontend:
     build:
@@ -144,6 +166,8 @@ services:
       - room-service
       - reservation-service
       - payment-service
+    networks:
+      - hotel-network
 
   prometheus:
     image: prom/prometheus:latest
@@ -152,6 +176,8 @@ services:
       - "9090:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - hotel-network
 
   jaeger:
     image: jaegertracing/all-in-one:1.46
@@ -163,6 +189,24 @@ services:
       - "14268:14268"
       - "14250:14250"
       - "9411:9411"
+    networks:
+      - hotel-network
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8081:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - hotel-network
+    depends_on:
+      - user-service
+      - room-service
+      - hotel-service
+      - reservation-service
+      - payment-service
+      - notification-service
 
 volumes:
   user-data:
@@ -170,3 +214,6 @@ volumes:
   room-db-data:
   reservation-db-data:
   payment-db-data:
+
+networks:
+  hotel-network:
