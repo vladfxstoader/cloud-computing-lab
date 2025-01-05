@@ -208,6 +208,16 @@ services:
       - payment-service
       - notification-service
 
+  rsyslog-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "515:514/udp"
+      - "515:514/tcp"
+    networks:
+      - hotel-network
+
 volumes:
   user-data:
   hotel-db-data:

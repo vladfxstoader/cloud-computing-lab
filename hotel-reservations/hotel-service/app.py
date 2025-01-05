@@ -1,10 +1,17 @@
 import os
+import logging
+import logging.handlers
 from flask import Flask, request, jsonify, Response
 from flask_sqlalchemy import SQLAlchemy
 from prometheus_client import Counter, generate_latest
 from flask_opentracing import FlaskTracing
 from jaeger_client import Config
 from opentracing.propagation import Format
+
+logger = logging.getLogger("hotel-service")
+logger.setLevel(logging.INFO)
+syslog_handler = logging.handlers.SysLogHandler(address=("rsyslog-server", 514))
+logger.addHandler(syslog_handler)
 
 app = Flask(__name__)
 
@@ -49,6 +56,7 @@ flask_tracer = FlaskTracing(tracer, True, app)
 
 @app.route('/')
 def index():
+    logger.info("Index endpoint called")
     return "Hotel service is running!"
 
 @app.route('/hotels', methods=['POST'])
@@ -61,6 +69,7 @@ def create_hotel():
         data = request.get_json()
         if not data or 'name' not in data or 'location' not in data:
             span.log_kv({'error': 'Invalid input'})
+            logger.error("Invalid input provided for hotel creation")
             return jsonify({"error": "Invalid input"}), 400
 
         new_hotel = Hotel(
@@ -70,6 +79,7 @@ def create_hotel():
         )
         db.session.add(new_hotel)
         db.session.commit()
+        logger.info("New hotel created: %s", new_hotel.name)
         return jsonify({"message": "Hotel created successfully"}), 201
 
 @app.route('/hotels', methods=['GET'])
@@ -81,6 +91,7 @@ def get_hotels():
             for hotel in hotels
         ]
         span.log_kv({'hotels_count': len(hotel_list)})
+        logger.info("Retrieved %d hotels", len(hotel_list))
         return jsonify(hotel_list), 200
 
 @app.route('/hotels/<int:hotel_id>', methods=['GET'])
@@ -90,6 +101,7 @@ def get_hotel(hotel_id):
         hotel = Hotel.query.get(hotel_id)
         if not hotel:
             span.log_kv({'error': 'Hotel not found'})
+            logger.error("Hotel not found: %d", hotel_id)
             return jsonify({"error": "Hotel not found"}), 404
         return jsonify({
             "id": hotel.id,
@@ -106,6 +118,7 @@ def update_hotel(hotel_id):
         hotel = Hotel.query.get(hotel_id)
         if not hotel:
             span.log_kv({'error': 'Hotel not found'})
+            logger.error("Hotel not found for update: %d", hotel_id)
             return jsonify({"error": "Hotel not found"}), 404
         if 'name' in data:
             hotel.name = data['name']
@@ -114,6 +127,7 @@ def update_hotel(hotel_id):
         if 'facilities' in data:
             hotel.facilities = data['facilities']
         db.session.commit()
+        logger.info("Hotel updated: %d", hotel_id)
         return jsonify({"message": "Hotel updated successfully"}), 200
 
 @app.route('/hotels/<int:hotel_id>', methods=['DELETE'])
@@ -123,6 +137,7 @@ def delete_hotel(hotel_id):
         hotel = Hotel.query.get(hotel_id)
         if not hotel:
             span.log_kv({'error': 'Hotel not found'})
+            logger.error("Hotel not found for deletion: %d", hotel_id)
             return jsonify({"error": "Hotel not found"}), 404
         db.session.delete(hotel)
         db.session.commit()

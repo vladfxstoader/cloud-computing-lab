@@ -1,9 +1,16 @@
 import os
+import logging
+import logging.handlers
 import requests
 from flask import Flask, request, jsonify, Response
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from prometheus_client import Counter, generate_latest
+
+logger = logging.getLogger("reservation-service")
+logger.setLevel(logging.INFO)
+syslog_handler = logging.handlers.SysLogHandler(address=("rsyslog-server", 514))
+logger.addHandler(syslog_handler)
 
 app = Flask(__name__)
 
@@ -34,6 +41,7 @@ with app.app_context():
 
 @app.route('/')
 def index():
+    logger.info("Reservation service is running!")
     return "Reservation service is running!"
 
 def user_exists(user_id):
@@ -49,12 +57,15 @@ def room_exists(room_id):
 @app.route('/reservations', methods=['POST'])
 def add_reservation():
     data = request.get_json()
+    logger.info("Received reservation request: %s", data)
     if not data or 'user_id' not in data or 'room_id' not in data or 'check_in' not in data or 'check_out' not in data:
         return jsonify({"error": "Invalid input"}), 400
 
     if not user_exists(data['user_id']):
+        logger.warning("User ID %d not found", data['user_id'])
         return jsonify({"error": "User ID not found"}), 404
     if not room_exists(data['room_id']):
+        logger.warning("Room ID %d not found", data['room_id'])
         return jsonify({"error": "Room ID not found"}), 404
 
     overlapping_reservations = Reservation.query.filter(
@@ -64,6 +75,7 @@ def add_reservation():
     ).all()
 
     if overlapping_reservations:
+        logger.warning("Room %d is already reserved for the selected dates", data['room_id'])
         return jsonify({"error": "Room is already reserved for the selected dates"}), 409
 
     new_reservation = Reservation(
@@ -74,6 +86,8 @@ def add_reservation():
     )
     db.session.add(new_reservation)
     db.session.commit()
+
+    logger.info("New reservation created: %s", new_reservation.id)
 
     room_service_url = os.getenv('ROOM_SERVICE_URL', 'http://room-service:5002/rooms')
     room_response = requests.get(f"{room_service_url}/{data['room_id']}")
