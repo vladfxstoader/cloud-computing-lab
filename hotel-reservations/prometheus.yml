@@ -19,4 +19,4 @@ scrape_configs:
       - targets: ['room-service:5002']
   - job_name: 'frontend-service'
     static_configs:
-      - targets: ['hotel-frontend:8080']
+      - targets: ['hotel-frontend:8085']
