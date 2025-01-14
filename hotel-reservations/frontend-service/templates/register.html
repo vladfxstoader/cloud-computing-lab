@@ -4,25 +4,164 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> <!-- Font Awesome Link -->
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h3 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 700px;
+        }
+        label {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+        }
+        input[type="email"],
+        input[type="password"],
+        input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 8px 0 16px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .password-container {
+            position: relative;
+        }
+        .show-password-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 18px;
+            color: #888;
+        }
+        button {
+            width: 100%;
+            padding: 7px;
+            background-color: rgb(206, 120, 62);
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: rgb(212, 110, 42);
+        }
+        p {
+            text-align: center;
+            font-size: 14px;
+            color: #555;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+            text-align: center;
+            padding-top: 15px;
+        }
+        .content{
+            width: 500px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Register</h1>
-    {% if error %}
-        <p style="color: red;">{{ error }}</p>
-    {% endif %}
-    <form action="/register" method="post">
-        <label for="name">Name:</label><br>
-        <input type="text" id="name" name="name" required><br><br>
+    <div class="content">
+        <form action="/register" method="post">
+            <h3>Register</h3>
+            <hr>
+            <br>
+            <label for="name"><b>Full Name:</b></label>
+            <input type="text" id="name" name="name" required>
+            <br>
+            <label for="email"><b>Email:</b></label>
+            <input type="email" id="email" name="email" required>
+            <br>
+            <label for="password"><b>Password:</b></label>
+            <div class="password-container">
+                <input type="password" id="password" name="password" required>
+                <i class="fas fa-eye show-password-icon" id="toggle-password"></i>
+            </div>
+            <br>
+            <label for="confirm_password"><b>Confirm Password:</b></label>
+            <div class="password-container">
+                <input type="password" id="confirm_password" name="confirm_password" required>
+                <i class="fas fa-eye show-password-icon" id="toggle-confirm-password"></i>
+            </div>
+            <button type="submit">Register</button>
+            <div class="error">{{ error }}</div>
+        </form>
 
-        <label for="email">Email:</label><br>
-        <input type="email" id="email" name="email" required><br><br>
+        <p>Already have an account? <a href="/login">Login here</a></p>
+    </div>
 
-        <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password" required><br><br>
+    <script>
+        // Toggle password visibility using the eye icon
+        const togglePasswordIcon = document.getElementById('toggle-password');
+        const passwordInput = document.getElementById('password');
+        
+        const toggleConfirmPasswordIcon = document.getElementById('toggle-confirm-password');
+        const confirmPasswordInput = document.getElementById('confirm_password');
 
-        <button type="submit">Register</button>
-    </form>
+        // Toggle visibility for password
+        togglePasswordIcon.addEventListener('click', function() {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
 
-    <p>Already have an account? <a href="/login">Login here</a></p>
+            // Toggle the eye icon (change from open to closed)
+            if (passwordInput.type === 'password') {
+                togglePasswordIcon.classList.remove('fa-eye');
+                togglePasswordIcon.classList.add('fa-eye-slash');
+            } else {
+                togglePasswordIcon.classList.remove('fa-eye-slash');
+                togglePasswordIcon.classList.add('fa-eye');
+            }
+        });
+
+        // Toggle visibility for confirm password
+        toggleConfirmPasswordIcon.addEventListener('click', function() {
+            const type = confirmPasswordInput.type === 'password' ? 'text' : 'password';
+            confirmPasswordInput.type = type;
+
+            // Toggle the eye icon (change from open to closed)
+            if (confirmPasswordInput.type === 'password') {
+                toggleConfirmPasswordIcon.classList.remove('fa-eye');
+                toggleConfirmPasswordIcon.classList.add('fa-eye-slash');
+            } else {
+                toggleConfirmPasswordIcon.classList.remove('fa-eye-slash');
+                toggleConfirmPasswordIcon.classList.add('fa-eye');
+            }
+        });
+    </script>
+
 </body>
 </html>
+

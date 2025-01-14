@@ -1,34 +1,11 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-</head>
-<body>
-    <h1>Login</h1>
-{{ error }}
-    <form action="/login" method="post">
-        <label for="email">Email:</label><br>
-        <input type="email" id="email" name="email" required><br><br>
-
-        <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password" required><br><br>
-
-        <button type="submit">Login</button>
-    </form>
-
-    <p>Don't have an account? <a href="/register">Register here</a></p>
-</body>
-</html>  
--->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> <!-- Font Awesome Link -->
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -58,7 +35,8 @@
             display: block;
         }
         input[type="email"],
-        input[type="password"] {
+        input[type="password"],
+        input[type="text"] {
             width: calc(100% - 20px);
             padding: 10px;
             margin: 8px 0 16px 0;
@@ -66,10 +44,22 @@
             border-radius: 4px;
             font-size: 14px;
         }
+        .password-container {
+            position: relative;
+        }
+        .show-password-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 18px;
+            color: #888;
+        }
         button {
             width: 100%;
             padding: 7px;
-            background-color: #4CAF50;
+            background-color:rgb(206, 120, 62);;
             border: none;
             color: white;
             font-size: 16px;
@@ -78,7 +68,7 @@
             transition: background-color 0.3s;
         }
         button:hover {
-            background-color: #45a049;
+            background-color:rgb(212, 110, 42);
         }
         p {
             text-align: center;
@@ -113,7 +103,10 @@
             <input type="email" id="email" name="email" required>
             <br>
             <label for="password"><b>Password:</b></label>
-            <input type="password" id="password" name="password" required><br>
+            <div class="password-container">
+                <input type="password" id="password" name="password" required>
+                <i class="fas fa-eye show-password-icon" id="toggle-password"></i>
+            </div>
 
             <button type="submit">Login</button>
             <div class="error">{{ error }}</div>
@@ -121,6 +114,27 @@
 
         <p>Don't have an account? <a href="/register">Register here</a></p>
     </div>
+
+    <script>
+        // Toggle password visibility using the eye icon
+        const togglePasswordIcon = document.getElementById('toggle-password');
+        const passwordInput = document.getElementById('password');
+
+        // Toggle visibility for password
+        togglePasswordIcon.addEventListener('click', function() {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+
+            // Toggle the eye icon (change from open to closed)
+            if (passwordInput.type === 'password') {
+                togglePasswordIcon.classList.remove('fa-eye');
+                togglePasswordIcon.classList.add('fa-eye-slash');
+            } else {
+                togglePasswordIcon.classList.remove('fa-eye-slash');
+                togglePasswordIcon.classList.add('fa-eye');
+            }
+        });
+    </script>
 </body>
 </html>
 

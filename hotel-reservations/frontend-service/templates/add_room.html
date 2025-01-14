@@ -3,22 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Room</title>
+    <title>Add Hotel</title>
+     <!-- FontAwesome CDN for Icons -->
+     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* Basic reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Ensure the body and html take full height */
+        html, body {
+            height: 100vh;
+            font-family: 'Arial', sans-serif;
+            background-image: url('https://media.istockphoto.com/id/627892060/photo/hotel-room-suite-with-view.jpg?s=612x612&w=0&k=20&c=YBwxnGH3MkOLLpBKCvWAD8F__T-ypznRUJ_N13Zb1cU='); /* Background image */
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+        }
+
+        /* Styling for the form container */
+        .form-container {
+            background-color: rgba(0, 0, 0, 0.6); /* Dark background for readability */
+            width: 70%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: left;
+            margin-top: 60px; /* Add top margin to position the form container */
+        }
+
+        label {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            display: block;
+            color: #fff;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #f39c12;
+        }
+
+        button[type="submit"] {
+            background-color: #f39c12;
+            color: white;
+            padding: 8px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 13px;
+            width: 100%;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.6);
+            margin-top: 15px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #e67e22;
+        }
+
+        /* Top banner for the page */
+        .top-banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 65px;
+            padding: 0 20px;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        .top-banner h2 {
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        /* Styling for the Logout button */
+        .back-home-and-logout {
+            background-color: #ff8c00;
+            color: white;
+            padding: 10px 20px;
+            font-size: 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-home-and-logout:hover {
+            background-color: #ff7f00;
+        }
+    </style>
 </head>
 <body>
-<a href="/logout"><button>Logout</button></a>
-    <h1>Add a New Room</h1>
-    <form action="/rooms/add" method="post">
-	<input type="hidden" name="hotel_id" value="{{ hotel_id }}"> 
+    <!-- Top Banner -->
+    <div class="top-banner">
+        <button class="back-home-and-logout" onclick="window.location.href='/hotels'">
+            <i class="fas fa-reply"></i>
+        </button>
 
-        <label for="type">Room Type:</label><br>
-        <input type="text" id="type" name="type" required><br><br>
+        <h2>Add a New Room</h2>
 
-        <label for="price">Price:</label><br>
-        <input type="text" id="price" name="price" required><br><br>
+        <button class="back-home-and-logout" onclick="window.location.href='/logout'">
+            <i class="fas fa-sign-out-alt"></i>
+        </button>
+    </div>
 
-        <button type="submit">Add Room</button>
-    </form>
-    <a href="/hotels">Back to Hotels</a>
+    <!-- Form Container -->
+    <div class="form-container">
+        <form action="/rooms/add" method="post">
+            <input type="hidden" name="hotel_id" value="{{ hotel_id }}">
+
+            <div class="form-group">
+                <label for="type">Room Type:</label>
+                <input type="text" id="type" name="type" required>
+            </div>
+
+            <div class="form-group">
+                <label for="price">Price:</label>
+                <input type="text" id="price" name="price" required>
+            </div>
+
+            <button type="submit">Add Room</button>
+        </form>
+    </div>
 </body>
 </html>

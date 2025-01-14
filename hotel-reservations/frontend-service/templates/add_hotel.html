@@ -1,37 +1,12 @@
-<!--<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Hotel</title>
-</head>
-<body>
-<a href="/logout"><button>Logout</button></a>
-    <h1>Add a New Hotel</h1>
-    <form action="/hotels/add" method="post">
-        <label for="name">Hotel Name:</label><br>
-        <input type="text" id="name" name="name" required><br><br>
-
-        <label for="location">Location:</label><br>
-        <input type="text" id="location" name="location" required><br><br>
-
-        <label for="facilities">Facilities (comma-separated):</label><br>
-        <input type="text" id="facilities" name="facilities"><br><br>
-
-        <button type="submit">Add Hotel</button>
-    </form>
-    <a href="/hotels">Back to Hotels</a>
-</body>
-</html>
--->
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Hotel</title>
+     <!-- FontAwesome CDN for Icons -->
+     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
     <style>
         /* Basic reset */
         * {
@@ -50,28 +25,6 @@
             display: flex;
             flex-direction: column;
             padding: 0;
-        }
-        h1 {
-            font-size: 3rem;
-            color: #ffffff;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
-            margin: 30px 0;
-            text-align: center;
-        }
-        /* Style for the logout button */
-        button {
-            background-color: #f39c12;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 18px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-            margin-left: 20px;
-        }
-        button:hover {
-            background-color: #e67e22;
         }
         /* Styling for the form */
         .form-container {
@@ -113,53 +66,53 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
             box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.6);
-            margin: auto;
             margin-top: 15px;
         }
         button[type="submit"]:hover {
             background-color: #e67e22;
         }
-        /* Top and Bottom banners */
+        /* Top banner for the page */
         .top-banner {
             display: flex;
-            flex-direction: row;
+            justify-content: space-between;
             align-items: center;
             height: 65px;
-            justify-content: space-between;
             padding: 0 20px;
             background-color: rgba(0, 0, 0, 0.6);
         }
-        .bottom-banner {
-            height: 65px;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: rgba(0, 0, 0, 0.6);
+
+        .top-banner h2 {
+            color: white;
+            font-size: 1.5rem;
         }
-        a {
-            text-decoration: none;
-            color: #ffffff;
-            font-size: 13px;
-            background-color: rgb(206, 120, 62);
-            padding: 8px 30px;
+        /* Styling for the Logout button */
+        .back-home-and-logout {
+            background-color: #ff8c00;
+            color: white;
+            padding: 10px 20px;
+            font-size: 24px;
+            border: none;
             border-radius: 5px;
+            cursor: pointer;
             transition: background-color 0.3s ease;
-            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
         }
-        a:hover {
-            background-color: rgb(212, 110, 42);
+        .back-home-and-logout:hover {
+            background-color: #ff7f00;
         }
     </style>
 </head>
 <body>
-
-    <!-- <div class="overlay"></div> -->
-    
-
+    <!-- Top Banner -->
     <div class="top-banner">
+        <button class="back-home-and-logout" onclick="window.location.href='/hotels'">
+            <i class="fas fa-reply"></i>
+        </button>
+
         <h2>Add a New Hotel</h2>
-        <a href="/logout">Logout</a>
+
+        <button class="back-home-and-logout" onclick="window.location.href='/logout'">
+            <i class="fas fa-sign-out-alt"></i>
+        </button>
     </div>
 
     <div class="form-container">
@@ -176,10 +129,5 @@
             <button type="submit">Add Hotel</button>
         </form>
     </div>
-
-    <div class="bottom-banner">
-        <a href="/hotels">Back to Hotels</a>
-    </div>
-
 </body>
 </html>
