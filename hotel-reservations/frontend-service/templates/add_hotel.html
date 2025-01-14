@@ -32,6 +32,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Hotel</title>
+     <!-- FontAwesome CDN for Icons -->
+     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
     <style>
         /* Basic reset */
         * {
@@ -113,21 +116,25 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
             box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.6);
-            margin: auto;
             margin-top: 15px;
         }
         button[type="submit"]:hover {
             background-color: #e67e22;
         }
-        /* Top and Bottom banners */
+
+        /* Top banner for the page */
         .top-banner {
             display: flex;
-            flex-direction: row;
+            justify-content: space-between;
             align-items: center;
             height: 65px;
-            justify-content: space-between;
             padding: 0 20px;
             background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        .top-banner h2 {
+            color: white;
+            font-size: 1.5rem;
         }
         .bottom-banner {
             height: 65px;
@@ -150,16 +157,51 @@
         a:hover {
             background-color: rgb(212, 110, 42);
         }
+
+    
+
+        /* Styling for the Logout button */
+        .back-home-and-logout {
+            background-color: #ff8c00;
+            color: white;
+            padding: 10px 20px;
+            font-size: 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-home-and-logout:hover {
+            background-color: #ff7f00;
+        }
+
     </style>
 </head>
 <body>
 
     <!-- <div class="overlay"></div> -->
     
-
+<!--
     <div class="top-banner">
         <h2>Add a New Hotel</h2>
-        <a href="/logout">Logout</a>
+        <button class="logout" onclick="window.location.href='/logout'">
+            <i class="fas fa-sign-out-alt"></i> 
+        </button>
+    </div>
+-->
+
+       <!-- Top Banner -->
+       <div class="top-banner">
+        <button class="back-home-and-logout" onclick="window.location.href='/hotels'">
+            <i class="fas fa-reply"></i>
+        </button>
+
+        <h2>Add a New Hotel</h2>
+
+        <button class="back-home-and-logout" onclick="window.location.href='/logout'">
+            <i class="fas fa-sign-out-alt"></i>
+        </button>
     </div>
 
     <div class="form-container">
@@ -177,9 +219,10 @@
         </form>
     </div>
 
+    <!-- 
     <div class="bottom-banner">
         <a href="/hotels">Back to Hotels</a>
     </div>
-
+-->
 </body>
 </html>

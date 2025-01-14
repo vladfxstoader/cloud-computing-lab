@@ -1,3 +1,4 @@
+<!--
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -43,5 +44,440 @@
         {% endfor %}
     </ul>
     <a href="/">Back to Home</a>
+</body>
+</html>
+-->
+
+<!--
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotels</title>
+    <style>
+        /* General styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 30px;
+            color: #444;
+        }
+
+        /* Container styles */
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+
+        /* Button styling */
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* Hotel list styling */
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #fafafa;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        li h3 {
+            margin-top: 20px;
+            color: #555;
+        }
+
+        /* Forms */
+        form {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        /* Layout for hotel rooms */
+        .room-details {
+            margin-top: 15px;
+            background-color: #e8f5e9;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .room-details p {
+            margin: 0;
+            padding: 5px 0;
+        }
+
+        /* Logout & Back to Home */
+        .logout, .back-home {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        .logout button, .back-home a {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="/logout" class="logout"><button>Logout</button></a>
+        <h1>Hotels</h1>
+        <a href="/hotels/add"><button>Add Hotel</button></a>
+
+        <ul>
+            {% for hotel in hotels %}
+                <li>
+                    <strong>{{ hotel.name }}</strong> - {{ hotel.location }}
+                    <br> Facilities: {{ hotel.facilities | join(", ") }}
+                    <ul>
+                        <a href="/rooms/add?hotel_id={{ hotel.id }}">
+                            <button>Add Room</button>
+                        </a>
+
+                        {% if hotel.rooms %}
+                            <h3>Rooms:</h3>
+                            {% for room in hotel.rooms %}
+                                <li class="room-details">
+                                    Type: {{ room.type }}, Price: ${{ room.price }} / night,
+                                    Availability: {{ "Yes" if room.availability else "No" }}
+                                    {% if room.availability %}
+                                    <form action="/rooms/reserve" method="post">
+                                        <p>Choose period:</p>
+                                        <input type="text" name="check_in" placeholder="Check-in (DD-MM-YYYY)" required>
+                                        <input type="text" name="check_out" placeholder="Check-out (DD-MM-YYYY)" required>
+                                        <button type="submit">Reserve</button>
+                                    </form>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        {% else %}
+                            <li>No rooms available for this hotel.</li>
+                        {% endif %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+        
+        <a href="/" class="back-home">Back to Home</a>
+    </div>
+
+</body>
+</html>
+
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotels</title>
+    <!-- FontAwesome CDN for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* General styles */
+        body {
+            font-family: Arial, sans-serif;
+            background: url('https://media.cntraveller.com/photos/61a65154b2a87fcf2e68748a/16:9/w_2580,c_limit/CHOUCHOU%20HD%20nov21-%C2%A9%20Nicolas%20Anetson-98.jpeg') no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 30px;
+            color: #444;
+        }
+
+        /* Container styles */
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+
+        /* Button styling */
+        button {
+            background-color: #ff8c00;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #ff7f00;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* Hotel list styling */
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #fafafa;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        li h3 {
+            margin-top: 20px;
+            color: #555;
+        }
+
+        /* Forms */
+        form {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #ff8c00;
+        }
+
+        /* Layout for hotel rooms */
+        .room-details {
+            margin-top: 15px;
+            background-color: #e8f5e9;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .room-details p {
+            margin: 0;
+            padding: 5px 0;
+        }
+
+        /* Availability status colors */
+        .availability {
+            font-weight: bold;
+        }
+
+        .available {
+            color: green;
+        }
+
+        .not-available {
+            color: red;
+        }
+
+        /* Logout button positioned in the top-right corner */
+        .logout {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            border: none;
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+            background-color: #ff8c00;
+        }
+
+        .logout:hover {
+            background-color:  #ff7f00;
+        }
+
+        /* Back to Home Link */
+        .back-home {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        .date-inputs {
+            display: flex;
+            gap: 10px; /* Space between the date inputs */
+            margin-bottom: 10px;
+            align-items: center;
+        }
+    
+        .date-inputs input {
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        
+        /* Top banner for the page */
+        .top-banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 65px;
+            padding: 0 20px;
+            background-color: transparent;
+        }
+
+        /* Styling for the Logout button */
+        .back-home-and-logout {
+            background-color: #ff8c00;
+            color: white;
+            padding: 10px 20px;
+            font-size: 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-home-and-logout:hover {
+            background-color: #ff7f00;
+        }
+
+    </style>
+</head>
+<body>
+
+       <!-- Top Banner -->
+       <div class="top-banner">
+        <button class="back-home-and-logout" onclick="window.location.href='/'">
+            <i class="fas fa-reply"></i>
+        </button>
+
+
+        <button class="back-home-and-logout" onclick="window.location.href='/logout'">
+            <i class="fas fa-sign-out-alt"></i>
+        </button>
+
+    </div>
+
+
+
+    <div class="container">
+        <h2>Hotels</h2>
+        {% if email == "admin@admin.com" %}
+            <a href="/hotels/add">
+                <button>Add Hotel</button>
+            </a>
+        {% endif %}
+
+        <ul>
+            {% for hotel in hotels %}
+                <li>
+                    <strong>{{ hotel.name }}</strong> - {{ hotel.location }}
+                    <br> Facilities: {{ hotel.facilities | join(", ") }}
+                    <ul>
+                        {% if email == "admin@admin.com" %}
+                            <a href="/rooms/add?hotel_id={{ hotel.id }}">
+                                <button>Add Room</button>
+                            </a>
+                        {% endif %}
+
+                        {% if hotel.rooms %}
+                            <h3>Rooms:</h3>
+                            {% for room in hotel.rooms %}
+                                <li class="room-details">
+                                    Type: {{ room.type }}, Price: ${{ room.price }} / night, Availability:
+                                    <span class="availability {% if room.availability %}available{% else %}not-available{% endif %}">
+                                        {{ "Yes" if room.availability else "No" }}
+                                    </span>
+                                    <!-- Availability: {{ "Yes" if room.availability else "No" }} -->
+                                    {% if room.availability %}
+                                    <form action="/rooms/reserve" method="post">
+                                        <div class="date-inputs">
+                                            <p>Choose period:</p>
+                                            <input type="hidden" name="room_id" value="{{ room.id }}">
+                                            <input type="date" name="check_in" required>
+                                            <input type="date" name="check_out" required>
+                                        
+                                        
+                                           <!-- <input type="text" name="check_in" placeholder="Check-in (DD-MM-YYYY)" required>
+                                            <input type="text" name="check_out" placeholder="Check-out (DD-MM-YYYY)" required> --> 
+                                        </div>
+                                        <button type="submit">Reserve</button>
+                                    </form>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        {% else %}
+                            <li>No rooms available for this hotel.</li>
+                        {% endif %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+        
+        <!-- <a href="/" class="back-home">Back to Home</a> -->
+    </div>
+
 </body>
 </html>

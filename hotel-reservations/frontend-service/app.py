@@ -5,6 +5,7 @@ import jwt
 import re
 from functools import wraps
 from prometheus_client import Counter, generate_latest
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'MySecretKey1@'
@@ -59,6 +60,12 @@ def index():
 @app.route('/hotels')
 @require_token
 def hotels():
+    token = request.cookies.get('token')
+    if not token:
+        return redirect(url_for('login'))    # Redirect to login if no token is found
+    decoded = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
+    email = decoded.get('email')
+    
     try:
         response = requests.get(f'{HOTEL_BACKEND_URL}/hotels')
         hotels = response.json()
@@ -77,7 +84,7 @@ def hotels():
             hotel['rooms'] = []
             print(f"Error fetching rooms for hotel {hotel['id']}: {e}")
 
-    return render_template('hotels.html', hotels=hotels)
+    return render_template('hotels.html', hotels=hotels, email=email)
 
 @app.route('/hotels/add', methods=['GET', 'POST'])
 @require_token
@@ -166,8 +173,14 @@ def reserve_room():
 
     data = request.form
     room_id = data.get('room_id')
-    check_in = data.get('check_in')
-    check_out = data.get('check_out')
+    
+    # Get and format the check-in and check-out dates
+    check_in_str = data.get('check_in')  # "YYYY-MM-DD" from the input
+    check_out_str = data.get('check_out')  # "YYYY-MM-DD" from the input
+    
+    # Convert the string to a datetime object and then format it as 'DD-MM-YYYY'
+    check_in = datetime.strptime(check_in_str, '%Y-%m-%d').strftime('%d-%m-%Y')
+    check_out = datetime.strptime(check_out_str, '%Y-%m-%d').strftime('%d-%m-%Y')
 
     try:
         reservation_response = requests.post(

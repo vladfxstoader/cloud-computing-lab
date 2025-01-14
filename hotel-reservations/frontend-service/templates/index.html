@@ -23,6 +23,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hotel Frontend</title>
+    <!-- FontAwesome CDN for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
     <style>
         /* Basic reset */
         * {
@@ -85,6 +88,7 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
             box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+            width: 200px;
         }
         .nav-buttons button:hover {
             background-color:rgb(167, 77, 22);
@@ -99,6 +103,23 @@
             height: 100%;
             z-index: -1;
         }
+
+        /* Logout button positioned in the top-right corner */
+        .logout {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            border: none;
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+            background-color: #ff8c00;
+        }
+
+        .logout:hover {
+            background-color:  #ff7f00;
+        }
+
     </style>
 </head>
 <body>
@@ -106,7 +127,10 @@
     <!-- Overlay for the background image -->
     <div class="overlay"></div>
 
-    <a href="/logout"><button>Logout</button></a>
+    <button class="logout" onclick="window.location.href='/logout'">
+        <i class="fas fa-sign-out-alt"></i> <!-- FontAwesome logout icon -->
+    </button>
+
     <h1>Welcome to the Hotel Management System</h1>
     
     <div class="nav-buttons">

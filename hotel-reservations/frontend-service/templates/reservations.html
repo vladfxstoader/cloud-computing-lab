@@ -35,6 +35,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reservations</title>
+
+    <!-- FontAwesome CDN for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
     <style>
         /* Basic reset */
         * {
@@ -124,15 +128,38 @@
             height: 100%;
             z-index: -1;
         }
+
+        /* Top banner for the page */
         .top-banner {
             display: flex;
-            flex-direction: row;
+            justify-content: space-between;
             align-items: center;
             height: 65px;
-            justify-content: space-between;
             padding: 0 20px;
             background-color: rgba(0, 0, 0, 0.6);
         }
+
+        .top-banner h2 {
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        /* Styling for the Logout button */
+        .back-home-and-logout {
+            background-color: #ff8c00;
+            color: white;
+            padding: 10px 20px;
+            font-size: 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-home-and-logout:hover {
+            background-color: #ff7f00;
+        }
+
         /* Bottom banner styling */
         .bottom-banner {
             height: 65px;
@@ -142,7 +169,7 @@
             align-items: center;
             background-color: rgba(0, 0, 0, 0.6);
         }
-         a {
+        a {
             text-decoration: none;
             color: #ffffff;
             font-size: 13px;
@@ -152,9 +179,25 @@
             transition: background-color 0.3s ease;
             box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
         }
-         a:hover {
+        a:hover {
             background-color: rgb(212, 110, 42);
         }
+        /* Logout button positioned in the top-right corner */
+        .logout {
+            position: absolute;
+            right: 20px;
+            border: none;
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+            background-color: #ff8c00;
+            padding: 10px 20px;
+        }
+
+        .logout:hover {
+            background-color:  #ff7f00;
+        }
+
     </style>
 </head>
 <body>
@@ -162,17 +205,34 @@
     <!-- Overlay for the background image -->
     <!-- <div class="overlay"></div> -->
 
+     <!-- Top Banner -->
+     <div class="top-banner">
+        <button class="back-home-and-logout" onclick="window.location.href='/'">
+            <i class="fas fa-reply"></i>
+        </button>
+
+        <h2>My Reservations</h2>
+
+        <button class="back-home-and-logout" onclick="window.location.href='/logout'">
+            <i class="fas fa-sign-out-alt"></i>
+        </button>
+    </div>
+
+    <!-- 
     <div class="top-banner">
         <h2>My Reservations</h2>
-        <a href="/logout">Logout</a>
-        
+        <a href="/logout">Logout</a> 
+        <button class="logout" onclick="window.location.href='/logout'">
+            <i class="fas fa-sign-out-alt"></i> 
+        </button>
     </div>
+    -->
 
     <div class="reservations-container">
         <ul>
             {% for reservation in reservations %}
                 <li>
-                    <strong color="white" size="14">{{ reservation.hotel_name }}</strong><br>
+                    <b color="white" style="font-size: 19px">{{ reservation.hotel_name }}</b><br>
                     <strong>Location:</strong> {{ reservation.location }}<br>
                     <strong>Room Type:</strong> {{ reservation.room_type }}<br>
                     <strong>Check-in:</strong> {{ reservation.check_in }}<br>
@@ -184,10 +244,6 @@
                 <li>No reservations found.</li>
             {% endfor %}
         </ul>
-    </div>
-
-    <div class="bottom-banner">
-        <a href="/">Back to Home</a>
     </div>
 
 </body>
