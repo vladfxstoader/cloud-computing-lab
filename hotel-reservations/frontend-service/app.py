@@ -178,9 +178,18 @@ def reserve_room():
     check_in_str = data.get('check_in')  # "YYYY-MM-DD" from the input
     check_out_str = data.get('check_out')  # "YYYY-MM-DD" from the input
     
-    # Convert the string to a datetime object and then format it as 'DD-MM-YYYY'
-    check_in = datetime.strptime(check_in_str, '%Y-%m-%d').strftime('%d-%m-%Y')
-    check_out = datetime.strptime(check_out_str, '%Y-%m-%d').strftime('%d-%m-%Y')
+    # Convert the string to a datetime object 
+    check_in_date = datetime.strptime(check_in_str, '%Y-%m-%d')
+    check_out_date = datetime.strptime(check_out_str, '%Y-%m-%d')
+    
+    # Compare the datetime objects
+    if check_out_date <= check_in_date:
+        print("Check-out date is earlier than or equal to check-in date.")
+        return jsonify({"error": "Check-out date is earlier than or equal to check-in date."}), 500
+    
+    # Format it as 'DD-MM-YYYY'
+    check_in = check_in_date.strftime('%d-%m-%Y')
+    check_out = check_out_date.strftime('%d-%m-%Y')
 
     try:
         reservation_response = requests.post(

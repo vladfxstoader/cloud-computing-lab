@@ -60,7 +60,8 @@
             display: block;
         }
         input[type="email"],
-        input[type="password"] {
+        input[type="password"],
+        input[type="text"] {
             width: calc(100% - 20px);
             padding: 10px;
             margin: 8px 0 16px 0;
@@ -152,11 +153,11 @@
 
             // Toggle the eye icon (change from open to closed)
             if (passwordInput.type === 'password') {
-                togglePasswordIcon.classList.remove('fa-eye-slash');
-                togglePasswordIcon.classList.add('fa-eye');
-            } else {
                 togglePasswordIcon.classList.remove('fa-eye');
                 togglePasswordIcon.classList.add('fa-eye-slash');
+            } else {
+                togglePasswordIcon.classList.remove('fa-eye-slash');
+                togglePasswordIcon.classList.add('fa-eye');
             }
         });
     </script>

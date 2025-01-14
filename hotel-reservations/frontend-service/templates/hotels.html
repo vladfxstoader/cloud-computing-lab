@@ -452,18 +452,14 @@
                                     </span>
                                     <!-- Availability: {{ "Yes" if room.availability else "No" }} -->
                                     {% if room.availability %}
-                                    <form action="/rooms/reserve" method="post">
+                                    <form action="/rooms/reserve" method="post" id="reservationForm">
                                         <div class="date-inputs">
                                             <p>Choose period:</p>
                                             <input type="hidden" name="room_id" value="{{ room.id }}">
-                                            <input type="date" name="check_in" required>
-                                            <input type="date" name="check_out" required>
-                                        
-                                        
-                                           <!-- <input type="text" name="check_in" placeholder="Check-in (DD-MM-YYYY)" required>
-                                            <input type="text" name="check_out" placeholder="Check-out (DD-MM-YYYY)" required> --> 
+                                            <input type="date" name="check_in" id="check_in" required>
+                                            <input type="date" name="check_out" id="check_out" required>
                                         </div>
-                                        <button type="submit">Reserve</button>
+                                        <button type="submit" id="reserveButton" disabled >Reserve</button>
                                     </form>
                                     {% endif %}
                                 </li>
@@ -478,6 +474,37 @@
         
         <!-- <a href="/" class="back-home">Back to Home</a> -->
     </div>
+
+    <script>
+        // Get the input fields and the submit button
+        const checkIn = document.getElementById('check_in');
+        const checkOut = document.getElementById('check_out');
+        const reserveButton = document.getElementById('reserveButton');
+    
+        // Function to validate the dates and enable/disable the submit button
+        function validateDates() {
+            const checkInDate = new Date(checkIn.value);
+            const checkOutDate = new Date(checkOut.value);
+    
+            // If the check-out date is earlier or the same as check-in date, disable the submit button
+            if (checkOutDate <= checkInDate) {
+                reserveButton.disabled = true;
+                reserveButton.style.backgroundColor = '#d3d3d3';  // Disabled color (light gray)
+                reserveButton.style.cursor = 'not-allowed';
+            } else {
+                reserveButton.disabled = false;
+                reserveButton.style.backgroundColor = '#ff8c00';  // Enabled color 
+                reserveButton.style.cursor = 'pointer'; 
+            }
+        }
+    
+        // Add event listeners for date inputs to trigger validation
+        checkIn.addEventListener('change', validateDates);
+        checkOut.addEventListener('change', validateDates);
+    
+        // Initial check to disable the button if the dates are invalid when the page loads
+        validateDates();
+    </script>
 
 </body>
 </html>
