@@ -1,192 +1,3 @@
-<!--<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Room</title>
-</head>
-<body>
-<a href="/logout"><button>Logout</button></a>
-    <h1>Add a New Room</h1>
-    <form action="/rooms/add" method="post">
-	<input type="hidden" name="hotel_id" value="{{ hotel_id }}"> 
-
-        <label for="type">Room Type:</label><br>
-        <input type="text" id="type" name="type" required><br><br>
-
-        <label for="price">Price:</label><br>
-        <input type="text" id="price" name="price" required><br><br>
-
-        <button type="submit">Add Room</button>
-    </form>
-    <a href="/hotels">Back to Hotels</a>
-</body>
-</html>
--->
-
-<!--
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Room</title>
-
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-
-    <style>
-        /* General styles */
-        body {
-            font-family: Arial, sans-serif;
-            background: url('https://via.placeholder.com/1920x1080') no-repeat center center fixed;
-            background-size: cover;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-
-        h1 {
-            text-align: center;
-            margin-top: 30px;
-            color: #444;
-        }
-
-        /* Container styles */
-        .container {
-            width: 80%;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            margin-top: 30px;
-        }
-
-        /* Button styling */
-        button {
-            background-color: #ff8c00;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 5px;
-            font-size: 16px;
-        }
-
-        button:hover {
-            background-color: #ff7f00;
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-        /* Form styling */
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            padding: 20px;
-        }
-
-        label {
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        input[type="text"] {
-            padding: 10px;
-            font-size: 14px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-        }
-
-        input[type="text"]:focus {
-            outline: none;
-            border-color: #ff8c00;
-        }
-
-        /* Input container */
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Styling for both Back and Logout buttons */
-        .button {
-            display: inline-flex;
-            align-items: center;
-            background-color: #ff8c00;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            font-size: 18px;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .button:hover {
-            background-color: #ff7f00;
-        }
-
-        .button i {
-            margin-right: 8px;  /* Space between icon and text */
-        }
-
-        /* Logout button positioned in the top-right corner */
-        .logout {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-        }
-
-        /* Back to Hotels button positioned in the top-left corner */
-        .back-home {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-        }
-
-    </style>
-</head>
-<body>
-
-   
-    <a href="/logout" class="button logout">
-        <i class="fas fa-sign-out-alt"></i> Logout
-    </a>
-
-    
-    <a href="/hotels" class="button back-home">
-        <i class="fas fa-arrow-left"></i> Back to Hotels
-    </a>
-
-    <div class="container">
-        <h1>Add a New Room</h1>
-        <form action="/rooms/add" method="post">
-            <input type="hidden" name="hotel_id" value="{{ hotel_id }}">
-
-            <div class="form-group">
-                <label for="type">Room Type:</label>
-                <input type="text" id="type" name="type" required>
-            </div>
-
-            <div class="form-group">
-                <label for="price">Price:</label>
-                <input type="text" id="price" name="price" required>
-            </div>
-
-            <button type="submit">Add Room</button>
-        </form>
-    </div>
-
-</body>
-</html>
-
--->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -215,14 +26,6 @@
             display: flex;
             flex-direction: column;
             padding: 0;
-        }
-
-        h1 {
-            font-size: 3rem;
-            color: #ffffff;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
-            margin: 30px 0;
-            text-align: center;
         }
 
         /* Styling for the form container */
@@ -306,42 +109,9 @@
         .back-home-and-logout:hover {
             background-color: #ff7f00;
         }
-
-        /* Back button at the bottom of the page */
-        .bottom-banner {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: rgba(0, 0, 0, 0.6);
-            padding: 20px 0;
-        }
-
-        .bottom-banner a {
-            background-color: rgb(206, 120, 62);
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-size: 16px;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-        }
-
-        .bottom-banner a:hover {
-            background-color: rgb(212, 110, 42);
-        }
-
-        /* Back to Hotels button positioned in the top-left corner */
-        .back-home {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-        }
-
     </style>
 </head>
 <body>
-
     <!-- Top Banner -->
     <div class="top-banner">
         <button class="back-home-and-logout" onclick="window.location.href='/hotels'">
@@ -373,12 +143,5 @@
             <button type="submit">Add Room</button>
         </form>
     </div>
-
-    
-    <!-- Bottom Banner -->
-    <!-- <div class="bottom-banner">
-        <a href="/hotels">Back to Hotels</a>
-    </div> -->
-
 </body>
 </html>
