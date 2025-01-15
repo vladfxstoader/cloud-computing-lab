@@ -176,7 +176,7 @@ def get_user_reservations(user_id):
 
     reservations = Reservation.query.filter_by(user_id=user_id).all()
     if not reservations:
-        return jsonify({"message": "No reservations found for this user."}), 404
+        return jsonify([]), 200
     reservation_list = [
         {
             "id": reservation.id,
