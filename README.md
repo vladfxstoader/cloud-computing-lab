@@ -1,10 +1,77 @@
-# cloud-computing-lab
+# Microservices-Based Hotel Reservation System
 
-1. Install VS code and Docker Desktop
-2. Open the VS code and Docker Desktop
-3. If you are not in the hotel-reservations directoruy, go into it with the following command:
-```cd hotel-reservations ``` 
-4. Get the data from the container and start the project
-```docker-compose up --build```
-5. For refresh and closing:
-```docker-compose down ```
+This repository contains a **web application based on microservices** for a hotel reservation system. Each microservice is containerized using **Docker** and has its own database.
+
+---
+
+## Features
+
+- **Microservices Architecture**: 
+  - Independent services for user, hotel, room, reservation and payment management.
+- **Frontend**: A dedicated frontend service to interact with the backend microservices.
+- **Observability**:
+  - **Metrics**: Prometheus integration for performance monitoring.
+  - **Tracing**: Jaeger for distributed tracing across microservices.
+  - **Logging**: Centralized logging via Rsyslog.
+- **API Gateway**: NGINX for load balancing and routing requests to appropriate services.
+
+---
+
+## Architecture Overview
+
+### Microservices
+
+| Service                  | Port  | Description                                      |
+|--------------------------|-------|--------------------------------------------------|
+| **user-service**         | 5000  | Manages user information and authentication.     |
+| **hotel-service**        | 5001  | Handles hotel information and availability.      |
+| **room-service**         | 5002  | Manages room details for hotels.                 |
+| **reservation-service**  | 5003  | Handles booking and reservation logic.           |
+| **payment-service**      | 5004  | Processes payments for reservations.             |
+| **hotel-frontend**       | 8085  | Provides a user interface for interaction.       |
+
+### Supporting Components
+
+| Component       | Description                                      |
+|------------------|-------------------------------------------------------|
+| **Prometheus**    | Metrics monitoring and alerting.                |
+| **Jaeger**        | Distributed tracing of microservice requests.    |
+| **NGINX**        | Load balancer and API Gateway.                  |
+| **Rsyslog**        | Centralized logging for all microservices.       |
+
+---
+
+## Prerequisites
+
+- Docker
+- Docker Compose
+
+
+---
+
+## Getting Started
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/vladfxstoader/cloud-computing-lab.git
+cd hotel-reservations
+```
+### 2. Build and Run the Application
+```bash
+docker-compose up --build
+```
+### 3. Access the Application
+- Frontend: http://localhost:8085
+- Prometheus Dashboard: http://localhost:9090
+- Jaeger UI: http://localhost:16686
+  
+### 4. Stop the Application
+```bash
+docker-compose down
+```
+---
+## Contributors
+
+- [Predescu Denisa](https://github.com/denisapredescu)
+- [Sandu Raluca](https://github.com/ralucsandu)
+- [Toader Vlad](https://github.com/vladfxstoader)
