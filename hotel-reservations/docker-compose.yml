@@ -16,17 +16,19 @@ services:
       - hotel-network
 
   user-service:
-    build: ./user-service
+    image: user-service:latest
     ports:
       - "5000:5000"
     environment:
       DATABASE_URL: postgresql://user:password@user-db:5432/user_db
     depends_on:
       - user-db
-    volumes:
-      - ./user-service:/app
     networks:
       - hotel-network
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
 
   hotel-db:
     image: postgres:15
@@ -42,18 +44,19 @@ services:
       - hotel-network
 
   hotel-service:
-    build:
-      context: ./hotel-service
+    image: hotel-service:latest
     ports:
       - "5001:5001"
     depends_on:
       - hotel-db
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@hotel-db:5432/hotel_db
-    volumes:
-      - ./hotel-service:/app
     networks:
       - hotel-network
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
 
   room-db:
     image: postgres:15
@@ -69,8 +72,7 @@ services:
       - hotel-network
 
   room-service:
-    build:
-      context: ./room-service
+    image: room-service:latest
     ports:
       - "5002:5002"
     depends_on:
@@ -79,10 +81,12 @@ services:
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@room-db:5432/room_db
       - HOTEL_SERVICE_URL=http://hotel-service:5001/hotels
-    volumes:
-      - ./room-service:/app
     networks:
       - hotel-network
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
 
   reservation-db:
     image: postgres:15
@@ -98,8 +102,7 @@ services:
       - hotel-network
 
   reservation-service:
-    build:
-      context: ./reservation-service
+    image: reservation-service:latest
     ports:
       - "5003:5003"
     environment:
@@ -114,6 +117,10 @@ services:
       - payment-service
     networks:
       - hotel-network
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
 
   payment-db:
     image: postgres:15
@@ -129,29 +136,33 @@ services:
       - hotel-network
 
   payment-service:
-    build:
-      context: ./payment-service
+    image: payment-service:latest
     ports:
       - "5004:5004"
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@payment-db:5432/payment_db
     depends_on:
       - payment-db
-    volumes:
-      - ./payment-service:/app
     networks:
       - hotel-network
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
 
   notification-service:
-    build: ./notification-service
+    image: notification-service:latest
     ports:
       - "5005:5005"
     networks:
       - hotel-network
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
 
   hotel-frontend:
-    build:
-      context: ./frontend-service
+    image: hotel-frontend:latest
     ports:
       - "8085:8085"
     environment:
@@ -168,6 +179,10 @@ services:
       - payment-service
     networks:
       - hotel-network
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
 
   prometheus:
     image: prom/prometheus:latest
@@ -209,9 +224,7 @@ services:
       - notification-service
 
   rsyslog-server:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: rsyslog-server:latest
     ports:
       - "515:514/udp"
       - "515:514/tcp"
